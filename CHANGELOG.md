@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.0] - 2026-05-24
+
+### Added
+- context compress command
+- context log command
+- context stats command
+- .contextosignore file support
+- Auto-compression trigger
+- Decision score integration
+- Snapshot labels and search
+- 80+ passing tests
+
 ## [0.1.0] - 2026-05-24
 
 ### Added

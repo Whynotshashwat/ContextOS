@@ -1,6 +1,0 @@
-cli
-core
-schemas
-sdk
-templates
-utils

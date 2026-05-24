@@ -1,18 +1,19 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:6366f1,100:06b6d4&height=200&section=header&text=ContextOS&fontSize=80&fontColor=ffffff&fontAlignY=35&desc=AI%20Context%20Infrastructure%20Layer&descAlignY=55&descSize=20&animation=fadeIn" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:ffb7c5,100:ff69b4&height=200&section=header&text=ContextOS&fontSize=80&fontColor=ffffff&fontAlignY=35&desc=AI%20Context%20Infrastructure%20Layer&descAlignY=55&descSize=20&animation=fadeIn&customColorList=0,2,2,5,30" width="100%"/>
 
 <br/>
 
-[![License](https://img.shields.io/badge/License-Apache_2.0-6366f1.svg?style=for-the-badge)](LICENSE)
-[![Python](https://img.shields.io/badge/Python-3.10+-06b6d4.svg?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[![Version](https://img.shields.io/badge/Version-0.1.0-10b981.svg?style=for-the-badge)]()
-[![Status](https://img.shields.io/badge/Status-Active-10b981.svg?style=for-the-badge)]()
-[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-f59e0b.svg?style=for-the-badge)](CONTRIBUTING.md)
+[![License](https://img.shields.io/badge/License-Apache_2.0-ff69b4.svg?style=for-the-badge)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.10+-ffb7c5.svg?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![Version](https://img.shields.io/badge/Version-0.1.0-ff69b4.svg?style=for-the-badge)]()
+[![Status](https://img.shields.io/badge/Status-Active-ff69b4.svg?style=for-the-badge)]()
+[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-ffb7c5.svg?style=for-the-badge)](CONTRIBUTING.md)
+[![PyPI](https://img.shields.io/badge/PyPI-contextos--cli-ff69b4.svg?style=for-the-badge&logo=pypi&logoColor=white)](https://pypi.org/project/contextos-cli/)
 
 <br/>
 
-### *Stop repeating yourself to AI. Let ContextOS remember.*
+### 🌸 *Stop repeating yourself to AI. Let ContextOS remember.* 🌸
 
 <br/>
 
@@ -59,22 +60,6 @@ ContextOS sits between you and any AI model. It maintains structured project mem
 
 ---
 
-## 🎬 Demo
-
-> 📹 **Initialize a project in seconds**
-
-![Init Demo](docs/gifs/init.gif)
-
-> 📹 **Full context injected in 45 tokens**
-
-![Explain Demo](docs/gifs/explain.gif)
-
-> 📹 **A/B/C suggestions with decision tracking**
-
-![Suggest Demo](docs/gifs/suggest.gif)
-
----
-
 ## 🔥 Why ContextOS?
 
 <table>
@@ -105,6 +90,12 @@ ContextOS sits between you and any AI model. It maintains structured project mem
 ---
 
 ## 📦 Install
+
+```bash
+pip install contextos-cli
+```
+
+Or from source:
 
 ```bash
 git clone https://github.com/Whynotshashwat/ContextOS.git
@@ -317,7 +308,7 @@ ContextOS is **fully removable** at any time:
 ```bash
 # Remove ContextOS completely
 rm -rf .contextos/
-pip uninstall contextos
+pip uninstall contextos-cli
 ```
 
 Your project:
@@ -346,7 +337,7 @@ Phase 3 — Ecosystem    ░░░░░░░░░░░░░░░░░░�
 - [x] Snapshot and rollback
 - [x] Context import
 - [x] Context score
-- [ ] Python SDK
+- [x] Python SDK
 - [ ] JavaScript SDK
 - [ ] VS Code extension
 - [ ] Antigravity integration
@@ -388,9 +379,9 @@ Free for personal and commercial use.
 
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:06b6d4,100:6366f1&height=100&section=footer" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:ff69b4,100:ffb7c5&height=100&section=footer" width="100%"/>
 
-**Built with 🧠 by [Whynotshashwat](https://github.com/Whynotshashwat)**
+**Built with 🌸 by [Whynotshashwat](https://github.com/Whynotshashwat)**
 
 *If ContextOS helped you — give it a ⭐*
 

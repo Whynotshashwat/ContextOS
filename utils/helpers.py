@@ -143,3 +143,9 @@ def setup_contextos_dir(project_root: Path) -> Path:
     for d in dirs:
         d.mkdir(parents=True, exist_ok=True)
     return contextos_dir
+
+def get_config(project_root: Path = None):
+    """Get config for current project."""
+    from core.config import Config
+    root = project_root or find_project_root() or Path.cwd()
+    return Config(root)

@@ -2,6 +2,7 @@ import json
 import shutil
 from pathlib import Path
 from datetime import datetime
+from core.compressor import Compressor
 
 import click
 from rich.console import Console
@@ -431,3 +432,127 @@ def cmd_import():
             console.print(f"  [cyan]✓[/cyan] {item}")
     else:
         logger.warning("No importable files found")
+
+# --- Compress ---
+
+def cmd_compress():
+    project_root = find_project_root()
+    if not project_root:
+        logger.error("No ContextOS project found. Run 'context init' first.")
+        return
+
+    engine = Engine(project_root)
+    memory = Memory(get_contextos_dir(project_root))
+    compressor = Compressor()
+    model = engine.load_context()
+    decisions = memory.get_decisions()
+
+    # Take snapshot before compressing
+    memory.take_snapshot(
+        engine.parser.load_raw(),
+        label="before_compress"
+    )
+
+    # Compress history
+    history = memory.get_history()
+    if not history:
+        logger.warning("No history to compress yet.")
+        return
+
+    compressed_block = compressor.build_compressed_block(
+        model,
+        decisions=decisions
+    )
+    token_count = compressor.count_tokens(compressed_block)
+
+    memory.add_to_history({
+        "type": "compressed_summary",
+        "entries_compressed": len(history),
+        "token_count": token_count,
+        "compressed_block": compressed_block
+    })
+
+    logger.success(
+        f"Compressed {len(history)} history entries"
+    )
+    logger.info(f"Current context: {token_count} tokens")
+
+
+# --- Log ---
+
+def cmd_log():
+    project_root = find_project_root()
+    if not project_root:
+        logger.error("No ContextOS project found. Run 'context init' first.")
+        return
+
+    log_dir = get_contextos_dir(project_root) / "logs"
+    if not log_dir.exists():
+        logger.warning("No logs found.")
+        return
+
+    log_files = sorted(log_dir.glob("*.log"), reverse=True)
+    if not log_files:
+        logger.warning("No logs found.")
+        return
+
+    console.print("\n[bold cyan]=== ContextOS Log ===[/bold cyan]\n")
+
+    for log_file in log_files[:3]:  # show last 3 days
+        with open(log_file, "r") as f:
+            lines = f.readlines()
+        for line in lines[-20:]:  # last 20 entries per file
+            line = line.strip()
+            if not line:
+                continue
+            if "ERROR" in line:
+                console.print(f"[red]{line}[/red]")
+            elif "SUCCESS" in line:
+                console.print(f"[green]{line}[/green]")
+            elif "WARNING" in line:
+                console.print(f"[yellow]{line}[/yellow]")
+            else:
+                console.print(f"[cyan]{line}[/cyan]")
+
+    console.print("\n[bold cyan]====================[/bold cyan]\n")
+
+
+# --- Stats ---
+
+def cmd_stats(baseline: int = None):
+    project_root = find_project_root()
+    if not project_root:
+        logger.error("No ContextOS project found. Run 'context init' first.")
+        return
+
+    from core.stats import Stats
+    stats = Stats(project_root)
+    data = stats.get_stats(baseline_tokens=baseline)
+    formatted = stats.format_stats(data)
+    console.print(formatted)
+
+
+# --- Ignore ---
+
+def cmd_ignore_init():
+    project_root = find_project_root() or Path.cwd()
+    from core.ignore import IgnoreRules
+    ignore = IgnoreRules(project_root)
+    path = ignore.create_default()
+    logger.success(f".contextosignore created at {path}")
+
+
+def cmd_ignore_list():
+    project_root = find_project_root()
+    if not project_root:
+        logger.error("No ContextOS project found. Run 'context init' first.")
+        return
+
+    from core.ignore import IgnoreRules
+    ignore = IgnoreRules(project_root)
+    rules = ignore.list_rules()
+
+    console.print("\n[bold cyan]=== Ignore Rules ===[/bold cyan]")
+    for rule in rules:
+        console.print(f"  [yellow]{rule}[/yellow]")
+    console.print(f"\n[cyan]Total: {len(rules)} rules[/cyan]\n")

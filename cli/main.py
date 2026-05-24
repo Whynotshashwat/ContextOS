@@ -120,6 +120,55 @@ def import_context():
     """Import context from existing project files."""
     cmd_import()
 
+# --- Compress ---
+
+@cli.command()
+def compress():
+    """Compress context history."""
+    from cli.commands import cmd_compress
+    cmd_compress()
+
+
+# --- Log ---
+
+@cli.command()
+def log():
+    """View recent AI interaction log."""
+    from cli.commands import cmd_log
+    cmd_log()
+
+
+# --- Stats ---
+
+@cli.command()
+@click.option("--baseline", type=int, default=None,
+              help="Your typical raw prompt size in tokens for reduction calculation.")
+def stats(baseline):
+    """Show context usage statistics."""
+    from cli.commands import cmd_stats
+    cmd_stats(baseline)
+
+
+# --- Ignore ---
+
+@cli.group()
+def ignore():
+    """Manage .contextosignore rules."""
+    pass
+
+
+@ignore.command("init")
+def ignore_init():
+    """Create default .contextosignore file."""
+    from cli.commands import cmd_ignore_init
+    cmd_ignore_init()
+
+
+@ignore.command("list")
+def ignore_list():
+    """List current ignore rules."""
+    from cli.commands import cmd_ignore_list
+    cmd_ignore_list()
 
 # --- Entry Point ---
 

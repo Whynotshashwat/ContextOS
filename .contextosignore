@@ -1,0 +1,29 @@
+# ContextOS Ignore File
+# Files and folders listed here will never be included in context
+
+# Dependencies
+.venv/
+node_modules/
+
+# Build artifacts
+__pycache__/
+*.pyc
+*.pyo
+dist/
+build/
+*.egg-info/
+
+# Logs
+*.log
+logs/
+
+# Version control
+.git/
+
+# Environment
+.env
+config.json
+
+# Test artifacts
+.pytest_cache/
+.coverage

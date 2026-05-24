@@ -1,0 +1,86 @@
+{
+  "starter_tasks": [
+    {
+      "id": "1",
+      "title": "Project setup",
+      "status": "pending",
+      "priority": "high",
+      "subtasks": [
+        {
+          "id": "1.1",
+          "title": "Define project goal",
+          "status": "pending"
+        },
+        {
+          "id": "1.2",
+          "title": "Define project structure",
+          "status": "pending"
+        },
+        {
+          "id": "1.3",
+          "title": "List core features",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "title": "Core implementation",
+      "status": "pending",
+      "priority": "high",
+      "subtasks": [
+        {
+          "id": "2.1",
+          "title": "Build core logic",
+          "status": "pending"
+        },
+        {
+          "id": "2.2",
+          "title": "Build data layer",
+          "status": "pending"
+        },
+        {
+          "id": "2.3",
+          "title": "Build API layer",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "title": "Testing",
+      "status": "pending",
+      "priority": "medium",
+      "subtasks": [
+        {
+          "id": "3.1",
+          "title": "Write unit tests",
+          "status": "pending"
+        },
+        {
+          "id": "3.2",
+          "title": "Write integration tests",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "title": "Documentation",
+      "status": "pending",
+      "priority": "medium",
+      "subtasks": [
+        {
+          "id": "4.1",
+          "title": "Write README",
+          "status": "pending"
+        },
+        {
+          "id": "4.2",
+          "title": "Write API docs",
+          "status": "pending"
+        }
+      ]
+    }
+  ]
+}

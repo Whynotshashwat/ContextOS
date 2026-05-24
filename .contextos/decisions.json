@@ -1,0 +1,11 @@
+{
+  "decisions": [
+    {
+      "id": "d1",
+      "task_id": "1",
+      "selected_option": "B",
+      "rationale": "user selected",
+      "timestamp": "2026-05-24T06:21:20.624492"
+    }
+  ]
+}

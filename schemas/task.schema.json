@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Task",
+  "description": "ContextOS task definition schema",
+  "version": "1.0",
+  "type": "object",
+  "required": ["id", "title", "status"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique task identifier e.g. 1, 2.1, 2.2"
+    },
+    "title": {
+      "type": "string",
+      "description": "Short task title"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "in_progress", "done", "blocked"],
+      "default": "pending"
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["low", "medium", "high"],
+      "default": "medium"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional notes about this task"
+    },
+    "subtasks": {
+      "type": "array",
+      "maxItems": 5,
+      "items": {
+        "$ref": "#"
+      },
+      "description": "Max 5 subtasks per task"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AICF",
+  "description": "AI Context Format - Universal AI context specification by ContextOS",
+  "version": "1.0",
+  "type": "object",
+  "required": ["aicf_version", "project", "state", "tasks", "rules"],
+  "properties": {
+    "aicf_version": {
+      "type": "string",
+      "description": "AICF specification version"
+    },
+    "project": {
+      "type": "object",
+      "required": ["name", "goal"],
+      "properties": {
+        "name": { "type": "string" },
+        "goal": { "type": "string" },
+        "description": { "type": "string" }
+      }
+    },
+    "state": {
+      "type": "object",
+      "required": ["phase", "current_task"],
+      "properties": {
+        "phase": { "type": "string" },
+        "current_task": { "type": "string" },
+        "current_subtask": { "type": "string" }
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/task" }
+    },
+    "rules": {
+      "type": "object",
+      "properties": {
+        "max_subtasks": { "type": "integer", "default": 5 },
+        "execute_one_subtask_only": { "type": "boolean", "default": true },
+        "always_use_context": { "type": "boolean", "default": true }
+      }
+    }
+  },
+  "definitions": {
+    "task": {
+      "type": "object",
+      "required": ["id", "title", "status"],
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "in_progress", "done", "blocked"]
+        },
+        "subtasks": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/task" }
+        }
+      }
+    }
+  }
+}

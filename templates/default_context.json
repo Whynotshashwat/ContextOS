@@ -1,0 +1,32 @@
+{
+  "aicf_version": "1.0",
+  "project": {
+    "name": "",
+    "goal": "",
+    "description": ""
+  },
+  "state": {
+    "phase": "Planning",
+    "current_task": "",
+    "current_subtask": ""
+  },
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Project setup",
+      "status": "in_progress",
+      "priority": "high",
+      "subtasks": []
+    }
+  ],
+  "rules": {
+    "max_subtasks": 5,
+    "execute_one_subtask_only": true,
+    "always_use_context": true
+  },
+  "config": {
+    "provider": "",
+    "model": "",
+    "api_key_env": ""
+  }
+}

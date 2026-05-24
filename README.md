@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:6366f1,100:06b6d4&height=200&section=header&text=ContextOS&fontSize=80&fontColor=ffffff&fontAlignY=35&desc=AI%20Context%20Infrastructure%20Layer&descAlignY=55&descSize=20&animation=fadeIn" width="100%"/>
+<img src="assets/banner.png" width="100%"/>
 
 <br/>
 

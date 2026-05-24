@@ -1,10 +1,9 @@
 <div align="center">
 
-<<<<<<< HEAD
 <img src="assets/banner.png" width="100%"/>
-=======
-<img src="https://capsule-render.vercel.app/api?type=venom&color=0:f0f7e6,50:e8f5e9,100:c8e6c9&height=220&section=header&text=ContextOS&fontSize=80&fontColor=2d5a27&fontAlignY=40&desc=AI%20Context%20Infrastructure%20Layer&descAlignY=58&descSize=20&descColor=3a7d32&animation=fadeIn&stroke=a5d6a7&strokeWidth=1" width="100%"/>
->>>>>>> 79d533911cc40970e5bf7918589b6cc75c526fe5
+
+
+
 
 <br/>
 

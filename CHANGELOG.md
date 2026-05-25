@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.3.0] - 2026-05-25
+
+### Added
+- MCP server integration for Claude Code and Cursor
+- context config command — set provider, model, agent
+- Startup banner with agent and model info
+- core/config.py — configuration management
+- core/ignore.py — .contextosignore support
+- core/stats.py — honest project statistics
+
 ## [0.2.0] - 2026-05-24
 
 ### Added

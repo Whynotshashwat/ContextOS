@@ -2,17 +2,14 @@
 
 <img src="assets/banner.png" width="100%"/>
 
-
-
-
 <br/>
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-3a7d32.svg?style=for-the-badge)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.10+-2d5a27.svg?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[![Version](https://img.shields.io/badge/Version-0.1.0-3a7d32.svg?style=for-the-badge)]()
-[![Status](https://img.shields.io/badge/Status-Active-2d5a27.svg?style=for-the-badge)]()
-[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-3a7d32.svg?style=for-the-badge)](CONTRIBUTING.md)
+[![Version](https://img.shields.io/badge/Version-0.3.0-3a7d32.svg?style=for-the-badge)]()
+[![CI](https://img.shields.io/github/actions/workflow/status/Whynotshashwat/ContextOS/ci.yml?branch=develop&style=for-the-badge&label=CI&color=2d5a27)](https://github.com/Whynotshashwat/ContextOS/actions)
 [![PyPI](https://img.shields.io/badge/PyPI-contextos--cli-2d5a27.svg?style=for-the-badge&logo=pypi&logoColor=white)](https://pypi.org/project/contextos-cli/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-3a7d32.svg?style=for-the-badge)](CONTRIBUTING.md)
 
 <br/>
 
@@ -20,7 +17,7 @@
 
 <br/>
 
-[**Getting Started**](#-install) · [**CLI Commands**](#-cli-commands) · [**How It Works**](#-how-it-works) · [**Roadmap**](#-roadmap) · [**Contributing**](#-contributing)
+[**Getting Started**](#-install) · [**CLI Commands**](#-cli-commands) · [**MCP Integration**](#-mcp-integration) · [**How It Works**](#-how-it-works) · [**Roadmap**](#-roadmap) · [**Contributing**](#-contributing)
 
 <br/>
 
@@ -49,12 +46,12 @@ Meanwhile the AI burns hundreds of tokens just reading context it already proces
 ```
 Without ContextOS                    With ContextOS
 ─────────────────                    ──────────────
-You → [entire codebase]              You → ContextOS → [45 tokens]
+You → [entire codebase]              You → ContextOS → [52 tokens]
     → [full history]                             ↓
     → [repeated rules]               Compressed. Focused. Structured.
     → AI Model                       → AI Model
 
-    ~3000 tokens                     ~45 tokens
+    ~3000 tokens                     ~52 tokens
 ```
 
 </div>
@@ -163,12 +160,78 @@ context suggest 1
 | `context snapshot` | Save checkpoint | `context snapshot "before refactor"` |
 | `context rollback` | Restore last snapshot | `context rollback` |
 | `context import` | Import from README/TODO | `context import` |
+| `context stats` | Show honest usage stats | `context stats --baseline 4000` |
+| `context log` | View interaction log | `context log` |
+| `context compress` | Compress context history | `context compress` |
+| `context ignore init` | Create .contextosignore | `context ignore init` |
+| `context ignore list` | List ignore rules | `context ignore list` |
+| `context config set` | Set provider/model/agent | `context config set model gpt-4o` |
+| `context config show` | Show current config | `context config show` |
 
 ### Flags
 ```bash
 context done 1.1 --dry-run       # Preview without executing
 context decompose 1 --dry-run    # Preview subtasks before creating
+context stats --baseline 4000    # Show reduction with your baseline
 ```
+
+---
+
+## 🔌 MCP Integration
+
+ContextOS runs as an MCP server — connecting natively to Claude Code, Cursor, and any MCP-compatible agent.
+
+### Setup for Claude Code
+
+Add to your Claude Code MCP config:
+
+**Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+**Mac/Linux:** `~/.config/claude/claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "contextos": {
+      "command": "python",
+      "args": ["-m", "integrations.mcp.server"],
+      "cwd": "C:/path/to/your/project"
+    }
+  }
+}
+```
+
+### What Claude Code Can Do With ContextOS
+
+Once connected, Claude Code automatically:
+- Knows your current task and subtask
+- Reads your project decisions
+- Marks tasks done after completing them
+- Gets compressed context before every response
+
+```
+You: What should I work on next?
+Claude Code: [calls get_next_task] → Task 1.2: Install dependencies
+
+You: I finished that.
+Claude Code: [calls mark_done 1.2] → Done. Next: Configure environment
+```
+
+### Available MCP Tools
+
+| Tool | Description |
+|---|---|
+| `get_current_task` | Active task and subtask |
+| `get_next_task` | Next pending task |
+| `get_status` | Full project status |
+| `get_context` | Compressed context for a prompt |
+| `explain_context` | Preview context injection |
+| `mark_done` | Mark task complete |
+| `decompose_task` | Break task into subtasks |
+| `get_suggestions` | A/B/C implementation options |
+| `record_decision` | Save A/B/C decision |
+| `get_stats` | Project statistics |
+| `take_snapshot` | Save checkpoint |
+| `get_decisions` | View all decisions |
 
 ---
 
@@ -192,20 +255,18 @@ context decompose 1 --dry-run    # Preview subtasks before creating
 │                                      ▼              │
 │                          ┌───────────────────────┐  │
 │                          │  Compressed Context   │  │
-│                          │  45 tokens (not 3000) │  │
+│                          │  52 tokens (not 3000) │  │
 │                          └───────────┬───────────┘  │
 │                                      │              │
 │                                      ▼              │
 │                          ┌───────────────────────┐  │
-│                          │      AI Model         │  │
+│                          │  AI Model / MCP Agent │  │
 │                          │  (any provider)       │  │
 │                          └───────────────────────┘  │
 └─────────────────────────────────────────────────────┘
 ```
 
 ### Context Priority Stack
-
-ContextOS compresses context using a strict priority order:
 
 ```
 Priority 1 ── Current task + subtask
@@ -236,25 +297,18 @@ Every `context status` shows real metrics:
   Context Score      90/100
 ```
 
-Score breakdown:
-- Project name + goal defined → +35
-- Phase set → +10
-- Active task + subtask → +25
-- Tasks with subtasks → +20
-
 ---
 
 ## 📄 AICF — AI Context Format
 
-ContextOS uses **AICF (AI Context Format)** — an open specification for structured AI project memory.
+ContextOS uses **AICF (AI Context Format)** — an open specification for structured AI project memory. Any tool can read it without needing ContextOS.
 
 ```json
 {
   "aicf_version": "1.0",
   "project": {
     "name": "Jarvis",
-    "goal": "Build an AI voice assistant",
-    "description": "Voice and text AI assistant"
+    "goal": "Build an AI voice assistant"
   },
   "state": {
     "phase": "Core Features",
@@ -262,11 +316,7 @@ ContextOS uses **AICF (AI Context Format)** — an open specification for struct
     "current_subtask": "2.2"
   },
   "tasks": [
-    {
-      "id": "1",
-      "title": "Project setup",
-      "status": "done"
-    },
+    { "id": "1", "title": "Project setup", "status": "done" },
     {
       "id": "2",
       "title": "Command parser",
@@ -284,14 +334,13 @@ ContextOS uses **AICF (AI Context Format)** — an open specification for struct
 }
 ```
 
-Any tool can read AICF. No ContextOS dependency required.
-
 ---
 
 ## 🗂 Project Memory Structure
 
 ```
 your-project/
+├── .contextosignore     ← what to exclude from context
 └── .contextos/          ← isolated memory layer
     ├── aicf.json        ← project state (safe to commit)
     ├── memory.json      ← compressed history
@@ -300,26 +349,16 @@ your-project/
     └── logs/            ← interaction logs
 ```
 
-> ⚠️ Add `config.json` to `.gitignore` — it contains your API keys.
-
 ---
 
 ## 🛡 Removal Safety
 
-ContextOS is **fully removable** at any time:
-
 ```bash
-# Remove ContextOS completely
 rm -rf .contextos/
 pip uninstall contextos-cli
 ```
 
-Your project:
-- ✅ Compiles
-- ✅ Runs
-- ✅ Behaves identically
-
-Zero runtime dependency. Zero leftover code.
+Your project compiles, runs, and behaves identically. Zero runtime dependency.
 
 ---
 
@@ -327,13 +366,12 @@ Zero runtime dependency. Zero leftover code.
 
 ```
 Phase 1 — MVP          ████████████████████  Done ✅
-Phase 2 — Smart Memory ░░░░░░░░░░░░░░░░░░░░  Up Next
-Phase 3 — Ecosystem    ░░░░░░░░░░░░░░░░░░░░  Planned
+Phase 2 — Smart Memory ████████████████████  Done ✅
+Phase 3 — Ecosystem    ░░░░░░░░░░░░░░░░░░░░  In Progress
 ```
 
-- [x] Core engine
-- [x] AICF schema
-- [x] CLI — all commands
+- [x] Core engine + AICF schema
+- [x] CLI — 18 commands
 - [x] Context compression
 - [x] Decision tracking
 - [x] A/B/C suggestion engine
@@ -341,9 +379,13 @@ Phase 3 — Ecosystem    ░░░░░░░░░░░░░░░░░░�
 - [x] Context import
 - [x] Context score
 - [x] Python SDK
-- [ ] JavaScript SDK
+- [x] Honest stats engine
+- [x] .contextosignore support
+- [x] MCP server — Claude Code + Cursor integration
+- [x] GitHub Actions CI/CD
+- [x] 81 passing tests across Python 3.10, 3.11, 3.12
 - [ ] VS Code extension
-- [ ] Antigravity integration
+- [ ] JavaScript SDK
 - [ ] Team shared memory
 - [ ] Cloud sync
 
@@ -351,20 +393,16 @@ Phase 3 — Ecosystem    ░░░░░░░░░░░░░░░░░░�
 
 ## 🤝 Contributing
 
-Contributions are welcome.
+Contributions are welcome. Submit PRs to the `develop` branch.
 
 ```bash
-# Fork the repo
-git clone https://github.com/YOURUSERNAME/ContextOS.git
+git clone https://github.com/Whynotshashwat/ContextOS.git
 cd ContextOS
+git checkout develop
 python -m venv .venv
 .venv\Scripts\activate
 pip install -e .
-
-# Create your branch
 git checkout -b feature/your-feature
-
-# Make changes and push
 git push origin feature/your-feature
 ```
 
@@ -375,8 +413,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 ## 📜 License
 
 Apache 2.0 — see [LICENSE](LICENSE)
-
-Free for personal and commercial use.
 
 ---
 

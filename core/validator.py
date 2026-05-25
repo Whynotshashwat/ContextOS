@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Tuple, List
 from core.parser import AICFModel, Task
+import re
 
 
 class Validator:
@@ -118,3 +119,8 @@ class Validator:
             score += 10
 
         return min(score, 100)
+    
+    
+    def validate_task_id(self, task_id: str) -> bool:
+        """Only allow alphanumeric, dots and hyphens in task IDs."""
+        return bool(re.match(r'^[a-zA-Z0-9.\-]+$', task_id))

@@ -1,5 +1,8 @@
 from pathlib import Path
 
+import os
+import tempfile
+
 import click
 from cli.commands import (
     cmd_init,
@@ -22,9 +25,22 @@ console = Console()
 
 
 def print_banner():
-    """Print ContextOS startup banner."""
+    """Print ContextOS startup banner — once per terminal session."""
     from utils.helpers import find_project_root
     from core.config import Config
+
+    # Use terminal PID as session identifier
+    terminal_pid = os.environ.get("SESSIONNAME", "") + str(os.getpid() // 100)
+    session_flag = os.path.join(
+        tempfile.gettempdir(),
+        f"contextos_{terminal_pid}"
+    )
+
+    if os.path.exists(session_flag):
+        return
+
+    with open(session_flag, "w") as f:
+        f.write("shown")
 
     project_root = find_project_root()
     cfg = Config(project_root) if project_root else None
@@ -49,7 +65,6 @@ def print_banner():
     console.print(f"[cyan]  Provider :[/cyan] [white]{provider}[/white]")
     console.print(f"[dim]  {'─' * 55}[/dim]\n")
 
-
 @click.group(invoke_without_command=True)
 @click.pass_context
 def cli(ctx):
@@ -59,7 +74,6 @@ def cli(ctx):
     """
     if ctx.invoked_subcommand is not None:
         print_banner()
-
 
 # --- Init ---
 

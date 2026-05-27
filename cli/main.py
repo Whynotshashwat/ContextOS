@@ -58,7 +58,7 @@ def print_banner():
  ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚══════╝"""
 
     console.print(f"[bold magenta]{banner}[/bold magenta]")
-    console.print(f"[bold white]  v0.2.0  ·  AI Context Infrastructure Layer[/bold white]")
+    console.print(f"[bold white]  v0.3.0  ·  AI Context Infrastructure Layer[/bold white]")
     console.print(f"[dim]  {'─' * 55}[/dim]")
     console.print(f"[cyan]  Agent    :[/cyan] [white]{agent}[/white]")
     console.print(f"[cyan]  Model    :[/cyan] [white]{model}[/white]")

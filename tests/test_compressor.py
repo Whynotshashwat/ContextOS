@@ -148,3 +148,70 @@ def test_decisions_in_compressed_block(sample_model):
         decisions=decisions
     )
     assert "DECISION" in block
+
+# --- Ignore Integration Tests ---
+
+@pytest.fixture
+def project_with_ignore(tmp_path):
+    """Project root with a .contextosignore file."""
+    ignore_file = tmp_path / ".contextosignore"
+    ignore_file.write_text("""# Test ignore
+.venv/
+__pycache__/
+*.pyc
+*.log
+node_modules/
+""")
+    return tmp_path
+
+
+def test_compressor_initializes_without_project_root():
+    compressor = Compressor()
+    assert compressor.ignore is None
+
+
+def test_compressor_initializes_with_project_root(project_with_ignore):
+    compressor = Compressor(project_root=project_with_ignore)
+    assert compressor.ignore is not None
+
+
+def test_filter_paths_no_project_root():
+    compressor = Compressor()
+    paths = ["core/engine.py", ".venv/lib/site.py", "__pycache__/x.pyc"]
+    result = compressor.filter_paths(paths)
+    assert result == paths  # nothing filtered — no rules loaded
+
+
+def test_filter_paths_with_ignore(project_with_ignore):
+    compressor = Compressor(project_root=project_with_ignore)
+    paths = [
+        "core/engine.py",
+        ".venv/lib/site.py",
+        "__pycache__/engine.pyc",
+        "cli/main.py",
+        "logs/2026-05-25.log"
+    ]
+    result = compressor.filter_paths(paths)
+    assert "core/engine.py" in result
+    assert "cli/main.py" in result
+    assert ".venv/lib/site.py" not in result
+    assert "__pycache__/engine.pyc" not in result
+    assert "logs/2026-05-25.log" not in result
+
+
+def test_filter_paths_returns_all_when_no_match(project_with_ignore):
+    compressor = Compressor(project_root=project_with_ignore)
+    paths = ["core/engine.py", "sdk/python/contextos_sdk.py", "README.md"]
+    result = compressor.filter_paths(paths)
+    assert result == paths
+
+
+def test_compressor_build_block_unaffected_by_ignore(
+    sample_model, project_with_ignore
+):
+    """Confirm compressed block still builds correctly when project_root set."""
+    compressor = Compressor(project_root=project_with_ignore)
+    block = compressor.build_compressed_block(sample_model)
+    assert isinstance(block, str)
+    assert "Test the compressor" in block
+    assert compressor.count_tokens(block) <= compressor.PRIORITY_LIMIT

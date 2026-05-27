@@ -443,7 +443,7 @@ def cmd_compress():
 
     engine = Engine(project_root)
     memory = Memory(get_contextos_dir(project_root))
-    compressor = Compressor()
+    compressor = Compressor(project_root)
     model = engine.load_context()
     decisions = memory.get_decisions()
 

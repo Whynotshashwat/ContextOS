@@ -12,7 +12,7 @@ class Gateway:
         self.project_root = project_root or Path.cwd()
         self.contextos_dir = self.project_root / ".contextos"
         self.engine = Engine(self.project_root)
-        self.compressor = Compressor()
+        self.compressor = Compressor(project_root=self.project_root)
         self.memory = Memory(self.contextos_dir)
         self.validator = Validator()
 

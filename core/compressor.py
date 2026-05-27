@@ -1,14 +1,21 @@
 import tiktoken
-from typing import Optional
+from pathlib import Path
+from typing import Optional, List
 from core.parser import AICFModel, Task, SubTask
-
+from core.ignore import IgnoreRules
 
 class Compressor:
 
     PRIORITY_LIMIT = 800  # max tokens for compressed context
 
-    def __init__(self):
+    def __init__(self, project_root:Optional[Path] = None):
         self.encoder = tiktoken.get_encoding("cl100k_base")
+        self.ignore = IgnoreRules(project_root) if project_root else None
+
+    def filter_paths(self, paths: List[str]) -> List[str]:
+        if self.ignore:
+            return self.ignore.filter_paths(paths)
+        return paths
 
     # --- Token Counting ---
 

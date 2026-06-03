@@ -64,7 +64,7 @@ ContextOS sits between you and any AI model. It maintains structured project mem
 
 <table>
 <tr>
-<td width="50%">
+<td width="51%">
 
 ### ❌ Without ContextOS
 - Repeat project context every session

@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/banner.png" width="100%"/>
+<img src="assets/banner.jpg" width="100%"/>
 
 <br/>
 
@@ -383,7 +383,7 @@ Phase 3 — Ecosystem    ░░░░░░░░░░░░░░░░░░�
 - [x] .contextosignore support
 - [x] MCP server — Claude Code + Cursor integration
 - [x] GitHub Actions CI/CD
-- [x] 81 passing tests across Python 3.10, 3.11, 3.12
+- [x] 113 passing tests across Python 3.10, 3.11, 3.12
 - [ ] VS Code extension
 - [ ] JavaScript SDK
 - [ ] Team shared memory

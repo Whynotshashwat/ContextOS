@@ -24,12 +24,16 @@ class Compressor:
 
     # --- Compression ---
 
-    def compress(self, model: AICFModel) -> dict:
+    def compress(
+        self,
+        model: AICFModel,
+        decisions: Optional[list] = None
+    ) -> dict:
         """
         Priority stack:
         1. current_task + current_subtask
         2. active rules
-        3. last 3 decisions (pulled from caller if needed)
+        3. last 3 decisions
         4. pending tasks (titles only)
         5. project goal (single line)
         Drop: completed task details, logs, cache
@@ -47,7 +51,10 @@ class Compressor:
             "always_use_context": model.rules.always_use_context
         }
 
-        # Priority 3 — Pending tasks titles only
+        # Priority 3 — Last 3 decisions
+        compressed["decisions"] = (decisions or [])[-3:]
+
+        # Priority 4 — Pending tasks titles only
         pending = [
             {"id": t.id, "title": t.title}
             for t in model.tasks
@@ -55,10 +62,8 @@ class Compressor:
         ]
         compressed["pending_tasks"] = pending[:5]  # max 5
 
-        # Priority 4 — Project goal
+        # Priority 5 — Project goal
         compressed["project_goal"] = model.project.goal
-
-        # Priority 5 — Phase
         compressed["phase"] = model.state.phase
 
         return compressed
@@ -71,7 +76,7 @@ class Compressor:
         decisions: Optional[list] = None
     ) -> str:
 
-        c = self.compress(model)
+        c = self.compress(model, decisions)
 
         # Get current task title
         current_task_title = ""
@@ -85,8 +90,6 @@ class Compressor:
 
         lines = [
             "=== CONTEXT OS ===",
-            f"GOAL: {c['project_goal']}",
-            f"PHASE: {c['phase']}",
             f"CURRENT TASK: {current_task_title or c['current_task']}",
         ]
 
@@ -95,21 +98,25 @@ class Compressor:
                 f"CURRENT SUBTASK: {current_subtask_title}"
             )
 
+        # Priority 2 — Rules
+        lines.append("RULES: one subtask at a time")
+
+        # Priority 3 — Last 3 decisions
+        for d in c["decisions"]:
+            lines.append(
+                f"DECISION [{d['task_id']}]: {d['selected_option']}"
+            )
+
+        # Priority 4 — Pending task titles
         if c["pending_tasks"]:
             pending_titles = ", ".join(
                 [t["title"] for t in c["pending_tasks"]]
             )
             lines.append(f"PENDING: {pending_titles}")
 
-        # Last 3 decisions
-        if decisions:
-            recent = decisions[-3:]
-            for d in recent:
-                lines.append(
-                    f"DECISION [{d['task_id']}]: {d['selected_option']}"
-                )
-
-        lines.append("RULES: one subtask at a time")
+        # Priority 5 — Goal and state
+        lines.append(f"PHASE: {c['phase']}")
+        lines.append(f"GOAL: {c['project_goal']}")
         lines.append("=================")
 
         block = "\n".join(lines)

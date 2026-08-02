@@ -76,7 +76,7 @@ class Parser:
             raise FileNotFoundError(
                 f"AICF file not found at {self.context_path}"
             )
-        with open(self.context_path, "r") as f:
+        with open(self.context_path, "r", encoding="utf-8") as f:
             raw = json.load(f)
         try:
             return AICFModel(**raw)
@@ -84,9 +84,9 @@ class Parser:
             raise ValueError(f"Invalid AICF format:\n{e}")
 
     def save(self, model: AICFModel) -> None:
-        with open(self.context_path, "w") as f:
+        with open(self.context_path, "w", encoding="utf-8") as f:
             json.dump(model.model_dump(), f, indent=2)
 
     def load_raw(self) -> dict:
-        with open(self.context_path, "r") as f:
+        with open(self.context_path, "r", encoding="utf-8") as f:
             return json.load(f)

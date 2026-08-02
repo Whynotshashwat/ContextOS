@@ -23,8 +23,6 @@ from utils.helpers import (
     setup_contextos_dir,
     write_json,
     read_json,
-    generate_task_id,
-    generate_subtask_id,
     status_color,
     priority_color,
     friendly_timestamp
@@ -347,6 +345,7 @@ def cmd_rollback():
         logger.error("No ContextOS project found. Run 'context init' first.")
         return
 
+    engine = Engine(project_root)
     memory = Memory(get_contextos_dir(project_root))
     snapshots = memory.get_snapshots()
 
@@ -360,6 +359,11 @@ def cmd_rollback():
     if not aicf_data:
         logger.error("Could not restore snapshot")
         return
+
+    memory.take_snapshot(
+        engine.parser.load_raw(),
+        label="before_rollback"
+    )
 
     write_json(
         get_aicf_path(project_root),
@@ -387,7 +391,7 @@ def cmd_import():
     # Import from README.md
     readme = project_root / "README.md"
     if readme.exists():
-        with open(readme, "r") as f:
+        with open(readme, "r", encoding="utf-8") as f:
             lines = f.readlines()
         if lines:
             first_line = lines[0].strip().lstrip("#").strip()
@@ -405,7 +409,7 @@ def cmd_import():
     # Import from TODO.md
     todo = project_root / "TODO.md"
     if todo.exists():
-        with open(todo, "r") as f:
+        with open(todo, "r", encoding="utf-8") as f:
             lines = f.readlines()
         tasks = []
         task_id = 1
@@ -423,6 +427,11 @@ def cmd_import():
         if tasks:
             aicf_data["tasks"] = tasks
             imported.append(f"TODO.md → {len(tasks)} tasks")
+
+    if aicf_path.exists():
+        backup_path = aicf_path.with_name("aicf.json.bak")
+        shutil.copy2(aicf_path, backup_path)
+        logger.info(f"Existing context backed up to {backup_path}")
 
     write_json(aicf_path, aicf_data)
 
@@ -443,7 +452,7 @@ def cmd_compress():
 
     engine = Engine(project_root)
     memory = Memory(get_contextos_dir(project_root))
-    compressor = Compressor()
+    compressor = Compressor(project_root)
     model = engine.load_context()
     decisions = memory.get_decisions()
 
@@ -499,7 +508,7 @@ def cmd_log():
     console.print("\n[bold cyan]=== ContextOS Log ===[/bold cyan]\n")
 
     for log_file in log_files[:3]:  # show last 3 days
-        with open(log_file, "r") as f:
+        with open(log_file, "r", encoding="utf-8") as f:
             lines = f.readlines()
         for line in lines[-20:]:  # last 20 entries per file
             line = line.strip()

@@ -166,8 +166,18 @@ def test_cli_rollback(runner, project):
     with runner.isolated_filesystem(temp_dir=project):
         # Take snapshot first
         runner.invoke(cli, ["snapshot", "before-rollback"])
+
+        # Change the goal after snapshotting
+        aicf_path = project / ".contextos" / "aicf.json"
+        data = json.loads(aicf_path.read_text(encoding="utf-8"))
+        data["project"]["goal"] = "Changed goal"
+        aicf_path.write_text(json.dumps(data), encoding="utf-8")
+
         result = runner.invoke(cli, ["rollback"])
         assert result.exit_code == 0
+
+        restored = json.loads(aicf_path.read_text(encoding="utf-8"))
+        assert restored["project"]["goal"] == "Test the CLI"
 
 
 def test_cli_done_invalid_task(runner, project):

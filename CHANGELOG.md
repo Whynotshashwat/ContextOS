@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.1] - 2026-08-02
+
+### Added
+- JavaScript SDK (`@contextos/sdk`) with 28 tests
+
+### Fixed
+- Rollback in SDK now a no-op when no snapshots exist (pre-rollback snapshot)
+- Ignore rules use segment-aware matching (no substring false positives)
+- `config set` validates against supported provider/model/agent values
+- MCP errors include tracebacks
+- Compressor priority stack aligned with docs (task → rules → decisions → pending → goal)
+
 ## [0.3.0] - 2026-05-25
 
 ### Added

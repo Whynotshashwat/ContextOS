@@ -35,11 +35,11 @@ class Memory:
     # --- Helpers ---
 
     def _write_json(self, path: Path, data: dict):
-        with open(path, "w") as f:
+        with open(path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
 
     def _read_json(self, path: Path) -> dict:
-        with open(path, "r") as f:
+        with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
 
     # --- Decisions ---
@@ -76,7 +76,7 @@ class Memory:
 
     def take_snapshot(self, aicf_data: dict, label: str = "") -> str:
         data = self._read_json(self.memory_path)
-        snapshot_id = f"snap_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        snapshot_id = f"snap_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}"
         snapshot_path = self.snapshots_dir / f"{snapshot_id}.json"
 
         snapshot = {
@@ -133,5 +133,5 @@ class Memory:
     def log(self, message: str, level: str = "INFO"):
         log_file = self.logs_dir / f"{datetime.now().strftime('%Y-%m-%d')}.log"
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        with open(log_file, "a") as f:
+        with open(log_file, "a", encoding="utf-8") as f:
             f.write(f"[{timestamp}] [{level}] {message}\n")

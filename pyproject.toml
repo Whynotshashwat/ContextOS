@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "contextos-cli"
-version = "0.3.0"
+version = "0.3.1"
 description = "AI Context Infrastructure Layer - Reduce token consumption. Maintain AI continuity."
 readme = "README.md"
 license = { text = "Apache-2.0" }
@@ -41,7 +41,7 @@ context = "cli.main:cli"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["core*", "cli*", "utils*", "schemas*", "templates*", "sdk*"]
+include = ["core*", "cli*", "utils*", "schemas*", "templates*", "sdk*", "integrations*"]
 
 [tool.setuptools.package-data]
 "*" = ["*.json"]

@@ -121,11 +121,25 @@ def test_engine_set_current_task(project):
     assert model.state.current_task == "2"
 
 
+def test_engine_set_current_task_invalid(project):
+    engine = Engine(project)
+    assert engine.set_current_task("999") is False
+    model = engine.load_context()
+    assert model.state.current_task == "1"
+
+
 def test_engine_set_current_subtask(project):
     engine = Engine(project)
     engine.set_current_subtask("1.1")
     model = engine.load_context()
     assert model.state.current_subtask == "1.1"
+
+
+def test_engine_set_current_subtask_invalid(project):
+    engine = Engine(project)
+    assert engine.set_current_subtask("999") is False
+    model = engine.load_context()
+    assert model.state.current_subtask == ""
 
 
 def test_engine_build_prompt(project):

@@ -94,7 +94,7 @@ class Stats:
         if not self.log_dir.exists():
             return 0
         for log_file in self.log_dir.glob("*.log"):
-            with open(log_file, "r") as f:
+            with open(log_file, "r", encoding="utf-8") as f:
                 for line in f:
                     if "Prompt injected" in line:
                         count += 1
@@ -108,7 +108,7 @@ class Stats:
         if not self.log_dir.exists():
             return 0
         for log_file in self.log_dir.glob("*.log"):
-            with open(log_file, "r") as f:
+            with open(log_file, "r", encoding="utf-8") as f:
                 for line in f:
                     if "tokens:" in line:
                         try:

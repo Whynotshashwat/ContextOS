@@ -86,49 +86,34 @@ class Engine:
 
     def set_current_task(self, task_id: str) -> bool:
         ctx = self.load_context()
-        self._context.state.current_task = task_id
-        self.save_context()
-        return True
+        for task in ctx.tasks:
+            if task.id == task_id:
+                ctx.state.current_task = task_id
+                self._context = ctx
+                self.save_context()
+                return True
+        return False
 
     def set_current_subtask(self, subtask_id: str) -> bool:
         ctx = self.load_context()
-        self._context.state.current_subtask = subtask_id
-        self.save_context()
-        return True
+        for task in ctx.tasks:
+            for sub in task.subtasks:
+                if sub.id == subtask_id:
+                    ctx.state.current_subtask = subtask_id
+                    self._context = ctx
+                    self.save_context()
+                    return True
+        return False
 
     # --- Build Prompt ---
 
     def build_prompt(self, user_input: str) -> str:
+        from core.compressor import Compressor
+
         ctx = self.load_context()
-        task = self.get_current_task()
-        subtask = self.get_current_subtask()
-
-        prompt = f"""
-=== CONTEXT OS ===
-
-GOAL:
-{ctx.project.goal}
-
-PHASE:
-{ctx.state.phase}
-
-CURRENT TASK:
-{task.title if task else "No active task"}
-
-CURRENT SUBTASK:
-{subtask.title if subtask else "No active subtask"}
-
-RULES:
-- Execute one subtask only
-- Stay focused on current task
-- Do not modify unrelated code
-
-USER REQUEST:
-{user_input}
-
-=================
-"""
-        return prompt.strip()
+        compressor = Compressor(project_root=self.project_root)
+        context_block = compressor.build_compressed_block(ctx)
+        return f"{context_block}\n\nUSER REQUEST:\n{user_input}"
 
     # --- Status ---
 

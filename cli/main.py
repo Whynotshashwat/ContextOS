@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import os
+import atexit
 import tempfile
 
 import click
@@ -30,7 +31,7 @@ def print_banner():
     from core.config import Config
 
     # Use terminal PID as session identifier
-    terminal_pid = os.environ.get("SESSIONNAME", "") + str(os.getpid() // 100)
+    terminal_pid = os.environ.get("SESSIONNAME", "") + str(os.getpid())
     session_flag = os.path.join(
         tempfile.gettempdir(),
         f"contextos_{terminal_pid}"
@@ -39,8 +40,14 @@ def print_banner():
     if os.path.exists(session_flag):
         return
 
-    with open(session_flag, "w") as f:
+    with open(session_flag, "w", encoding="utf-8") as f:
         f.write("shown")
+
+    def _cleanup_flag():
+        if os.path.exists(session_flag):
+            os.remove(session_flag)
+
+    atexit.register(_cleanup_flag)
 
     project_root = find_project_root()
     cfg = Config(project_root) if project_root else None
@@ -58,7 +65,7 @@ def print_banner():
  ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚══════╝"""
 
     console.print(f"[bold magenta]{banner}[/bold magenta]")
-    console.print(f"[bold white]  v0.2.0  ·  AI Context Infrastructure Layer[/bold white]")
+    console.print(f"[bold white]  v0.3.1  ·  AI Context Infrastructure Layer[/bold white]")
     console.print(f"[dim]  {'─' * 55}[/dim]")
     console.print(f"[cyan]  Agent    :[/cyan] [white]{agent}[/white]")
     console.print(f"[cyan]  Model    :[/cyan] [white]{model}[/white]")
@@ -239,9 +246,30 @@ def config_set(key, value):
     """Set a config value. Keys: provider, model, agent, api_key_env"""
     from utils.helpers import find_project_root
     from core.config import Config
+    from core.config import (
+        SUPPORTED_PROVIDERS,
+        SUPPORTED_MODELS,
+        SUPPORTED_AGENTS
+    )
     from utils.logger import logger
     project_root = find_project_root() or Path.cwd()
     cfg = Config(project_root)
+
+    supported_keys = ["provider", "model", "agent", "api_key_env"]
+    if key not in supported_keys:
+        logger.error(f"Unknown config key: {key}. Valid keys: {', '.join(supported_keys)}")
+        return
+
+    if key == "provider" and value not in SUPPORTED_PROVIDERS:
+        logger.error(f"Invalid provider: {value}. Valid: {', '.join(SUPPORTED_PROVIDERS)}")
+        return
+    if key == "model" and value not in SUPPORTED_MODELS:
+        logger.error(f"Invalid model: {value}. Valid: {', '.join(SUPPORTED_MODELS)}")
+        return
+    if key == "agent" and value not in SUPPORTED_AGENTS:
+        logger.error(f"Invalid agent: {value}. Valid: {', '.join(SUPPORTED_AGENTS)}")
+        return
+
     cfg.set(key, value)
     logger.success(f"Config updated: {key} = {value}")
 

@@ -1,3 +1,4 @@
+import copy
 from typing import Optional
 from pathlib import Path
 from core.engine import Engine
@@ -12,7 +13,7 @@ class Gateway:
         self.project_root = project_root or Path.cwd()
         self.contextos_dir = self.project_root / ".contextos"
         self.engine = Engine(self.project_root)
-        self.compressor = Compressor()
+        self.compressor = Compressor(project_root=self.project_root)
         self.memory = Memory(self.contextos_dir)
         self.validator = Validator()
 
@@ -62,10 +63,14 @@ class Gateway:
         )
 
         # Log interaction
+        token_count = self.compressor.count_tokens(final_prompt)
         self.memory.log(
-            f"Prompt injected | tokens: "
-            f"{self.compressor.count_tokens(final_prompt)}"
+            f"Prompt injected | tokens: {token_count}"
         )
+        self.memory.add_to_history({
+            "type": "interaction",
+            "token_count": token_count
+        })
 
         # Save snapshot before interaction
         self.memory.take_snapshot(
@@ -109,11 +114,10 @@ class Gateway:
 
         model = self.engine.load_context()
 
-        # Temporarily override current task if provided
+        # Temporarily override current task without mutating engine state
         if task_id:
-            self.engine._context = model
-            self.engine.set_current_task(task_id)
-            model = self.engine.load_context()
+            model = copy.deepcopy(model)
+            model.state.current_task = task_id
 
         decisions = self.memory.get_decisions()
 

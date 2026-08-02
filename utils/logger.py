@@ -1,5 +1,6 @@
 from pathlib import Path
 from datetime import datetime
+from typing import Optional
 from rich.console import Console
 from rich.theme import Theme
 
@@ -21,6 +22,7 @@ class Logger:
 
     def __init__(self, log_dir: Path = None):
         self.log_dir = log_dir
+        self._resolved = log_dir is not None
         if log_dir:
             log_dir.mkdir(parents=True, exist_ok=True)
 
@@ -53,15 +55,29 @@ class Logger:
 
     # --- File Write ---
 
+    def _get_log_dir(self) -> Optional[Path]:
+        """Resolve log dir lazily to the active project's .contextos/logs."""
+        if self._resolved:
+            return self.log_dir
+        from utils.helpers import find_project_root, get_contextos_dir
+        root = find_project_root()
+        if root:
+            log_dir = get_contextos_dir(root) / "logs"
+            log_dir.mkdir(parents=True, exist_ok=True)
+            self.log_dir = log_dir
+        self._resolved = True
+        return self.log_dir
+
     def _write(self, message: str, level: str):
-        if not self.log_dir:
+        log_dir = self._get_log_dir()
+        if not log_dir:
             return
         log_file = (
-            self.log_dir /
+            log_dir /
             f"{datetime.now().strftime('%Y-%m-%d')}.log"
         )
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        with open(log_file, "a") as f:
+        with open(log_file, "a", encoding="utf-8") as f:
             f.write(f"[{timestamp}] [{level}] {message}\n")
 
 

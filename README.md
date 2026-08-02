@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-3a7d32.svg?style=for-the-badge)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.10+-2d5a27.svg?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![Node](https://img.shields.io/badge/Node.js-18+-2d5a27.svg?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org)
-[![Version](https://img.shields.io/badge/Version-0.3.0-3a7d32.svg?style=for-the-badge)]()
+[![Version](https://img.shields.io/badge/Version-0.3.1-3a7d32.svg?style=for-the-badge)]()
 [![CI](https://img.shields.io/github/actions/workflow/status/Whynotshashwat/ContextOS/ci.yml?branch=develop&style=for-the-badge&label=CI&color=2d5a27)](https://github.com/Whynotshashwat/ContextOS/actions)
 [![PyPI](https://img.shields.io/badge/PyPI-contextos--cli-2d5a27.svg?style=for-the-badge&logo=pypi&logoColor=white)](https://pypi.org/project/contextos-cli/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-3a7d32.svg?style=for-the-badge)](CONTRIBUTING.md)

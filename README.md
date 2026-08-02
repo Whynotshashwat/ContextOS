@@ -6,6 +6,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-3a7d32.svg?style=for-the-badge)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.10+-2d5a27.svg?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![Node](https://img.shields.io/badge/Node.js-18+-2d5a27.svg?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org)
 [![Version](https://img.shields.io/badge/Version-0.3.0-3a7d32.svg?style=for-the-badge)]()
 [![CI](https://img.shields.io/github/actions/workflow/status/Whynotshashwat/ContextOS/ci.yml?branch=develop&style=for-the-badge&label=CI&color=2d5a27)](https://github.com/Whynotshashwat/ContextOS/actions)
 [![PyPI](https://img.shields.io/badge/PyPI-contextos--cli-2d5a27.svg?style=for-the-badge&logo=pypi&logoColor=white)](https://pypi.org/project/contextos-cli/)
@@ -17,7 +18,7 @@
 
 <br/>
 
-[**Getting Started**](#-install) · [**CLI Commands**](#-cli-commands) · [**MCP Integration**](#-mcp-integration) · [**How It Works**](#-how-it-works) · [**Roadmap**](#-roadmap) · [**Contributing**](#-contributing)
+[**Getting Started**](#-install) · [**CLI Commands**](#-cli-commands) · [**MCP Integration**](#-mcp-integration) · [**JavaScript SDK**](#-install) · [**How It Works**](#-how-it-works) · [**Roadmap**](#-roadmap) · [**Contributing**](#-contributing)
 
 <br/>
 
@@ -115,6 +116,22 @@ Verify:
 ```bash
 context --help
 ```
+
+### JavaScript SDK
+
+```bash
+npm install @contextos/sdk
+```
+
+```js
+import { ContextOS } from '@contextos/sdk';
+
+const sdk = new ContextOS('/path/to/project');
+const prompt = await sdk.inject('implement auth for the admin panel');
+console.log(prompt);
+```
+
+Requires Node.js >= 18. See [`sdk/js/README.md`](sdk/js/README.md) for the full API.
 
 ---
 
@@ -367,8 +384,10 @@ Your project compiles, runs, and behaves identically. Zero runtime dependency.
 ```
 Phase 1 — MVP          ████████████████████  Done ✅
 Phase 2 — Smart Memory ████████████████████  Done ✅
-Phase 3 — Ecosystem    ░░░░░░░░░░░░░░░░░░░░  In Progress
+Phase 3 — Ecosystem    ████░░░░░░░░░░░░░░░░  In Progress (1/4)
 ```
+
+### ✅ Done
 
 - [x] Core engine + AICF schema
 - [x] CLI — 18 commands
@@ -379,15 +398,23 @@ Phase 3 — Ecosystem    ░░░░░░░░░░░░░░░░░░�
 - [x] Context import
 - [x] Context score
 - [x] Python SDK
+- [x] JavaScript SDK (`@contextos/sdk`, Node >= 18)
 - [x] Honest stats engine
 - [x] .contextosignore support
 - [x] MCP server — Claude Code + Cursor integration
 - [x] GitHub Actions CI/CD
-- [x] 113 passing tests across Python 3.10, 3.11, 3.12
-- [ ] VS Code extension
-- [ ] JavaScript SDK
-- [ ] Team shared memory
-- [ ] Cloud sync
+- [x] 113 passing tests (Python) + 28 passing tests (JS SDK)
+
+### 🚧 In Progress
+
+- [ ] VS Code extension — plain `tsc` extension reusing `@contextos/sdk`, with tree view, status bar, and ~8 palette commands
+- [ ] Team shared memory — git-based sync (`context sync init / push / pull / status`) syncing `aicf.json` + `decisions.json`; no server required
+- [ ] Cloud sync — same git-backed mechanism, pushed to a remote repo
+
+**Planned sync design (no new infrastructure):** `core/sync.py` shells out to
+git and shares only `aicf.json` and `decisions.json` (never logs, snapshots,
+or `config.json`). Surfaced in the CLI, Python SDK, JS SDK, and the VS Code
+extension via `child_process`.
 
 ---
 

@@ -35,11 +35,11 @@ class Memory:
     # --- Helpers ---
 
     def _write_json(self, path: Path, data: dict):
-        with open(path, "w") as f:
+        with open(path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
 
     def _read_json(self, path: Path) -> dict:
-        with open(path, "r") as f:
+        with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
 
     # --- Decisions ---
@@ -133,5 +133,5 @@ class Memory:
     def log(self, message: str, level: str = "INFO"):
         log_file = self.logs_dir / f"{datetime.now().strftime('%Y-%m-%d')}.log"
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        with open(log_file, "a") as f:
+        with open(log_file, "a", encoding="utf-8") as f:
             f.write(f"[{timestamp}] [{level}] {message}\n")

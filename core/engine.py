@@ -108,36 +108,12 @@ class Engine:
     # --- Build Prompt ---
 
     def build_prompt(self, user_input: str) -> str:
+        from core.compressor import Compressor
+
         ctx = self.load_context()
-        task = self.get_current_task()
-        subtask = self.get_current_subtask()
-
-        prompt = f"""
-=== CONTEXT OS ===
-
-GOAL:
-{ctx.project.goal}
-
-PHASE:
-{ctx.state.phase}
-
-CURRENT TASK:
-{task.title if task else "No active task"}
-
-CURRENT SUBTASK:
-{subtask.title if subtask else "No active subtask"}
-
-RULES:
-- Execute one subtask only
-- Stay focused on current task
-- Do not modify unrelated code
-
-USER REQUEST:
-{user_input}
-
-=================
-"""
-        return prompt.strip()
+        compressor = Compressor(project_root=self.project_root)
+        context_block = compressor.build_compressed_block(ctx)
+        return f"{context_block}\n\nUSER REQUEST:\n{user_input}"
 
     # --- Status ---
 

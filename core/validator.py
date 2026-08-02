@@ -53,9 +53,9 @@ class Validator:
             )
 
         # Subtask checks
-        if len(task.subtasks) > 10:
+        if len(task.subtasks) > 5:
             errors.append(
-                f"Task {task.id} exceeds maximum subtask limit"
+                f"Task {task.id} exceeds maximum subtask limit of 5"
             )
         for sub in task.subtasks:
             sub_errors = self.validate_task(sub)

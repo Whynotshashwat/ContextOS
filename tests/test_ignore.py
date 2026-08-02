@@ -71,6 +71,51 @@ def test_is_not_ignored_readme(ignore_with_rules):
     assert ignore_with_rules.is_ignored("README.md") == False
 
 
+# --- False Positive Regression Tests ---
+
+@pytest.fixture
+def exact_rules(tmp_path):
+    ignore_file = tmp_path / ".contextosignore"
+    ignore_file.write_text("""# Test ignore file
+.env
+config.json
+dist/
+node_modules/
+""")
+    return IgnoreRules(tmp_path)
+
+
+def test_config_json_not_substring_matched(exact_rules):
+    assert exact_rules.is_ignored("myconfig.json") == False
+
+
+def test_config_json_exact_matched(exact_rules):
+    assert exact_rules.is_ignored("config.json") == True
+
+
+def test_env_rule_requires_segment(exact_rules):
+    assert exact_rules.is_ignored(".env.local/scripts/x.py") == False
+    assert exact_rules.is_ignored("src/.env") == True
+
+
+def test_dist_rule_requires_segment(exact_rules):
+    assert exact_rules.is_ignored("my-dist-notes/notes.txt") == False
+    assert exact_rules.is_ignored("dist/notes.txt") == True
+
+
+def test_node_modules_rule(exact_rules):
+    assert exact_rules.is_ignored("node_modules/pkg/index.js") == True
+    assert exact_rules.is_ignored("notnode_modules/x.js") == False
+
+
+def test_leading_space_comment_not_a_rule(tmp_path):
+    ignore_file = tmp_path / ".contextosignore"
+    ignore_file.write_text(" # header comment\n.venv/\n")
+    ignore = IgnoreRules(tmp_path)
+    assert not any(r.startswith("#") for r in ignore.rules)
+    assert ".venv/" in ignore.rules
+
+
 def test_filter_paths(ignore_with_rules):
     paths = [
         "core/engine.py",

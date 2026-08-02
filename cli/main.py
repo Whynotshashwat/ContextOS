@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import os
+import atexit
 import tempfile
 
 import click
@@ -30,7 +31,7 @@ def print_banner():
     from core.config import Config
 
     # Use terminal PID as session identifier
-    terminal_pid = os.environ.get("SESSIONNAME", "") + str(os.getpid() // 100)
+    terminal_pid = os.environ.get("SESSIONNAME", "") + str(os.getpid())
     session_flag = os.path.join(
         tempfile.gettempdir(),
         f"contextos_{terminal_pid}"
@@ -39,8 +40,14 @@ def print_banner():
     if os.path.exists(session_flag):
         return
 
-    with open(session_flag, "w") as f:
+    with open(session_flag, "w", encoding="utf-8") as f:
         f.write("shown")
+
+    def _cleanup_flag():
+        if os.path.exists(session_flag):
+            os.remove(session_flag)
+
+    atexit.register(_cleanup_flag)
 
     project_root = find_project_root()
     cfg = Config(project_root) if project_root else None

@@ -23,8 +23,6 @@ from utils.helpers import (
     setup_contextos_dir,
     write_json,
     read_json,
-    generate_task_id,
-    generate_subtask_id,
     status_color,
     priority_color,
     friendly_timestamp
@@ -393,7 +391,7 @@ def cmd_import():
     # Import from README.md
     readme = project_root / "README.md"
     if readme.exists():
-        with open(readme, "r") as f:
+        with open(readme, "r", encoding="utf-8") as f:
             lines = f.readlines()
         if lines:
             first_line = lines[0].strip().lstrip("#").strip()
@@ -411,7 +409,7 @@ def cmd_import():
     # Import from TODO.md
     todo = project_root / "TODO.md"
     if todo.exists():
-        with open(todo, "r") as f:
+        with open(todo, "r", encoding="utf-8") as f:
             lines = f.readlines()
         tasks = []
         task_id = 1
@@ -510,7 +508,7 @@ def cmd_log():
     console.print("\n[bold cyan]=== ContextOS Log ===[/bold cyan]\n")
 
     for log_file in log_files[:3]:  # show last 3 days
-        with open(log_file, "r") as f:
+        with open(log_file, "r", encoding="utf-8") as f:
             lines = f.readlines()
         for line in lines[-20:]:  # last 20 entries per file
             line = line.strip()

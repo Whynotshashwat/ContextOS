@@ -52,8 +52,17 @@
           "type": "string",
           "enum": ["pending", "in_progress", "done", "blocked"]
         },
+        "priority": {
+          "type": "string",
+          "enum": ["low", "medium", "high"],
+          "default": "medium"
+        },
+        "notes": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "completed_at": { "type": "string", "format": "date-time" },
         "subtasks": {
           "type": "array",
+          "maxItems": 5,
           "items": { "$ref": "#/definitions/task" }
         }
       }

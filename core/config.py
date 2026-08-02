@@ -54,7 +54,7 @@ class Config:
     def _load(self):
         if self.config_path.exists():
             try:
-                with open(self.config_path, "r") as f:
+                with open(self.config_path, "r", encoding="utf-8") as f:
                     self._data = json.load(f)
             except Exception:
                 self._data = DEFAULT_CONFIG.copy()
@@ -65,7 +65,7 @@ class Config:
 
     def _save(self):
         self.contextos_dir.mkdir(parents=True, exist_ok=True)
-        with open(self.config_path, "w") as f:
+        with open(self.config_path, "w", encoding="utf-8") as f:
             json.dump(self._data, f, indent=2)
 
     # --- Get ---

@@ -27,7 +27,7 @@ class IgnoreRules:
 
     def _load(self):
         if self.ignore_file.exists():
-            with open(self.ignore_file, "r") as f:
+            with open(self.ignore_file, "r", encoding="utf-8") as f:
                 lines = f.readlines()
             self.rules = [
                 line.strip()
@@ -71,7 +71,7 @@ config.json
 .pytest_cache/
 .coverage
 """
-        with open(self.ignore_file, "w") as f:
+        with open(self.ignore_file, "w", encoding="utf-8") as f:
             f.write(content)
         return self.ignore_file
 
@@ -138,7 +138,7 @@ config.json
     def _save(self):
         comments = []
         if self.ignore_file.exists():
-            with open(self.ignore_file, "r") as f:
+            with open(self.ignore_file, "r", encoding="utf-8") as f:
                 lines = f.readlines()
             comments = [
                 l.strip()
@@ -146,7 +146,7 @@ config.json
                 if l.strip().startswith("#") or l.strip() == ""
             ]
 
-        with open(self.ignore_file, "w") as f:
+        with open(self.ignore_file, "w", encoding="utf-8") as f:
             for c in comments:
                 f.write(f"{c}\n")
             for rule in self.rules:

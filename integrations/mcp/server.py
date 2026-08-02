@@ -2,6 +2,7 @@ from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp import types
 import asyncio
+import traceback
 from integrations.mcp.tools import (
     tool_get_current_task,
     tool_get_next_task,
@@ -239,7 +240,10 @@ async def call_tool(
     except Exception as e:
         return [types.TextContent(
             type="text",
-            text=f"Error: {str(e)}"
+            text=(
+                f"Error ({type(e).__name__}): {e}\n"
+                f"{traceback.format_exc()}"
+            )
         )]
 
 

@@ -86,15 +86,24 @@ class Engine:
 
     def set_current_task(self, task_id: str) -> bool:
         ctx = self.load_context()
-        self._context.state.current_task = task_id
-        self.save_context()
-        return True
+        for task in ctx.tasks:
+            if task.id == task_id:
+                ctx.state.current_task = task_id
+                self._context = ctx
+                self.save_context()
+                return True
+        return False
 
     def set_current_subtask(self, subtask_id: str) -> bool:
         ctx = self.load_context()
-        self._context.state.current_subtask = subtask_id
-        self.save_context()
-        return True
+        for task in ctx.tasks:
+            for sub in task.subtasks:
+                if sub.id == subtask_id:
+                    ctx.state.current_subtask = subtask_id
+                    self._context = ctx
+                    self.save_context()
+                    return True
+        return False
 
     # --- Build Prompt ---
 

@@ -76,7 +76,7 @@ class Memory:
 
     def take_snapshot(self, aicf_data: dict, label: str = "") -> str:
         data = self._read_json(self.memory_path)
-        snapshot_id = f"snap_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        snapshot_id = f"snap_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}"
         snapshot_path = self.snapshots_dir / f"{snapshot_id}.json"
 
         snapshot = {

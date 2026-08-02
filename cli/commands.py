@@ -347,6 +347,7 @@ def cmd_rollback():
         logger.error("No ContextOS project found. Run 'context init' first.")
         return
 
+    engine = Engine(project_root)
     memory = Memory(get_contextos_dir(project_root))
     snapshots = memory.get_snapshots()
 
@@ -360,6 +361,11 @@ def cmd_rollback():
     if not aicf_data:
         logger.error("Could not restore snapshot")
         return
+
+    memory.take_snapshot(
+        engine.parser.load_raw(),
+        label="before_rollback"
+    )
 
     write_json(
         get_aicf_path(project_root),
@@ -423,6 +429,11 @@ def cmd_import():
         if tasks:
             aicf_data["tasks"] = tasks
             imported.append(f"TODO.md → {len(tasks)} tasks")
+
+    if aicf_path.exists():
+        backup_path = aicf_path.with_name("aicf.json.bak")
+        shutil.copy2(aicf_path, backup_path)
+        logger.info(f"Existing context backed up to {backup_path}")
 
     write_json(aicf_path, aicf_data)
 

@@ -5,6 +5,7 @@ from core.memory import Memory
 from core.suggester import Suggester
 from core.decomposer import Decomposer
 from core.validator import Validator
+from core.parser import AICFModel
 from utils.helpers import get_contextos_dir
 
 
@@ -108,9 +109,11 @@ class ContextOS:
         aicf_data = self.memory.restore_snapshot(latest["id"])
         if not aicf_data:
             return False
-        self.engine.parser.save(
-            self.engine.parser.load()
+        self.memory.take_snapshot(
+            self.engine.parser.load_raw(),
+            label="before_rollback"
         )
+        self.engine.parser.save(AICFModel(**aicf_data))
         return True
 
     def decisions(self) -> list:

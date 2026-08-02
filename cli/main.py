@@ -239,9 +239,30 @@ def config_set(key, value):
     """Set a config value. Keys: provider, model, agent, api_key_env"""
     from utils.helpers import find_project_root
     from core.config import Config
+    from core.config import (
+        SUPPORTED_PROVIDERS,
+        SUPPORTED_MODELS,
+        SUPPORTED_AGENTS
+    )
     from utils.logger import logger
     project_root = find_project_root() or Path.cwd()
     cfg = Config(project_root)
+
+    supported_keys = ["provider", "model", "agent", "api_key_env"]
+    if key not in supported_keys:
+        logger.error(f"Unknown config key: {key}. Valid keys: {', '.join(supported_keys)}")
+        return
+
+    if key == "provider" and value not in SUPPORTED_PROVIDERS:
+        logger.error(f"Invalid provider: {value}. Valid: {', '.join(SUPPORTED_PROVIDERS)}")
+        return
+    if key == "model" and value not in SUPPORTED_MODELS:
+        logger.error(f"Invalid model: {value}. Valid: {', '.join(SUPPORTED_MODELS)}")
+        return
+    if key == "agent" and value not in SUPPORTED_AGENTS:
+        logger.error(f"Invalid agent: {value}. Valid: {', '.join(SUPPORTED_AGENTS)}")
+        return
+
     cfg.set(key, value)
     logger.success(f"Config updated: {key} = {value}")
 

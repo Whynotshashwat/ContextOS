@@ -41,7 +41,7 @@ context = "cli.main:cli"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["core*", "cli*", "utils*", "schemas*", "templates*", "sdk*","intigration*"]
+include = ["core*", "cli*", "utils*", "schemas*", "templates*", "sdk*", "integrations*"]
 
 [tool.setuptools.package-data]
 "*" = ["*.json"]

@@ -32,7 +32,7 @@ class IgnoreRules:
             self.rules = [
                 line.strip()
                 for line in lines
-                if line.strip() and not line.startswith("#")
+                if line.strip() and not line.strip().startswith("#")
             ]
         else:
             self.rules = self.DEFAULT_RULES.copy()
@@ -79,21 +79,33 @@ config.json
 
     def is_ignored(self, path: str) -> bool:
         """Check if a path matches any ignore rule."""
-        path = path.replace("\\", "/")
+        path = path.replace("\\", "/").rstrip("/")
+        segments = [s for s in path.split("/") if s]
+
         for rule in self.rules:
-            rule = rule.rstrip("/")
-            # Directory rule
-            if rule.endswith("/") or "/" not in rule:
-                if rule.rstrip("/") in path:
-                    return True
-            # Wildcard rule
+            rule = rule.strip().rstrip("/")
+            if not rule or rule.startswith("#"):
+                continue
+
+            # Wildcard rule (e.g. *.pyc)
             if rule.startswith("*"):
-                ext = rule[1:]
-                if path.endswith(ext):
+                suffix = rule[1:]
+                if path.endswith(suffix):
                     return True
-            # Exact match
-            if path == rule or path.endswith("/" + rule):
+                continue
+
+            rule_segments = [s for s in rule.split("/") if s]
+
+            # Multi-segment rule (e.g. docs/build/) — path prefix match
+            if len(rule_segments) > 1:
+                if rule_segments == segments[: len(rule_segments)]:
+                    return True
+                continue
+
+            # Single segment rule — exact path segment match
+            if rule_segments[0] in segments:
                 return True
+
         return False
 
     # --- Filter ---
@@ -124,17 +136,18 @@ config.json
     # --- Save ---
 
     def _save(self):
-        existing = []
         comments = []
         if self.ignore_file.exists():
             with open(self.ignore_file, "r") as f:
                 lines = f.readlines()
-            comments = [l for l in lines if l.startswith("#") or l.strip() == ""]
-            existing = [l.strip() for l in lines if l.strip() and not l.startswith("#")]
+            comments = [
+                l.strip()
+                for l in lines
+                if l.strip().startswith("#") or l.strip() == ""
+            ]
 
         with open(self.ignore_file, "w") as f:
             for c in comments:
-                f.write(c)
+                f.write(f"{c}\n")
             for rule in self.rules:
-                if rule not in existing:
-                    f.write(f"{rule}\n")
+                f.write(f"{rule}\n")

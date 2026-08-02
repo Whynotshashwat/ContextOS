@@ -1,0 +1,29 @@
+{
+  "name": "@contextos/sdk",
+  "version": "0.4.0",
+  "description": "ContextOS JavaScript SDK - AI context infrastructure for your projects",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "./contextos.js",
+  "exports": {
+    ".": "./contextos.js"
+  },
+  "files": [
+    "contextos.js"
+  ],
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "ai",
+    "context",
+    "llm",
+    "token",
+    "memory",
+    "sdk",
+    "contextos"
+  ]
+}
